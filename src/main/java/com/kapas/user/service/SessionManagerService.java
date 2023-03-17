@@ -36,7 +36,7 @@ public class SessionManagerService {
         return userId + SALT_SPLITTER + AppUtils.generateRandomNumber(1, 20) + System.currentTimeMillis();
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     public UserSession createSession(User user) throws Exception {
 
         final LocalDateTime currentTime = LocalDateTime.now();
@@ -60,10 +60,12 @@ public class SessionManagerService {
         return session.getUser();
     }
 
+    @Transactional(rollbackFor = Throwable.class)
     public void deleteSession(String sessionId) {
         sessionOfUserRepository.deleteBySessionId(sessionId);
     }
 
+    @Transactional(rollbackFor = Throwable.class)
     public void deleteForUser(User userId) {
         sessionOfUserRepository.deleteForUser(userId);
     }

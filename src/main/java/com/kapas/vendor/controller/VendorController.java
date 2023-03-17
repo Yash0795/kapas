@@ -50,7 +50,7 @@ public class VendorController {
             @RequestParam(value = "sortBy", defaultValue = Vendor_.ID, required = false) String sortBy,
             @RequestParam(value = "sortDir", defaultValue = "desc", required = false) String sortDir,
             @RequestBody VendorSearch vendorSearch
-            ) {
+            ) throws Exception {
         PaginatedResponse<VendorResponse> vendorResponse = vendorService.getAllVendors(pageNo, pageSize, sortBy, sortDir, vendorSearch);
         return new ResponseEntity<>(vendorResponse, HttpStatus.OK);
     }

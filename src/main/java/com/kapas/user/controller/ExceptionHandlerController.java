@@ -22,10 +22,10 @@ public class ExceptionHandlerController {
     public ResponseEntity<ApiResponseError<String>> invalidAuth(MethodArgumentNotValidException e) {
         FieldError error = e.getBindingResult().getFieldError();
         if(Objects.nonNull(error)) {
-            return new ResponseEntity<>(new ApiResponseError<>(error.getDefaultMessage(), HttpStatus.BAD_REQUEST.getReasonPhrase()),
+            return new ResponseEntity<>(new ApiResponseError<>(error.getDefaultMessage()),
                     HttpStatus.BAD_REQUEST);
         } else {
-            return new ResponseEntity<>(new ApiResponseError<>("Method Argument Not Valid", HttpStatus.BAD_REQUEST.getReasonPhrase()),
+            return new ResponseEntity<>(new ApiResponseError<>("Method Argument Not Valid"),
                     HttpStatus.BAD_REQUEST);
         }
     }
@@ -40,21 +40,20 @@ public class ExceptionHandlerController {
                 violationMessage.append(constraintViolation.getMessage()).append(" ");
             }
         }
-        return new ResponseEntity<>(new ApiResponseError<>(violationMessage.toString(), HttpStatus.BAD_REQUEST.getReasonPhrase()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ApiResponseError<>(violationMessage.toString()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponseError<String>> unHandledExceptions(Exception e) {
         if (e instanceof ObjectOptimisticLockingFailureException || e instanceof StaleStateException) {
             return new ResponseEntity<>(new ApiResponseError<>("Multiple requests invoked at same time, Please Try " +
-                    "Again.", HttpStatus.CONFLICT.getReasonPhrase()), HttpStatus.CONFLICT);
+                    "Again."), HttpStatus.CONFLICT);
         }
         if (e.getMessage() != null && e.getMessage().length() > 0) {
-            return new ResponseEntity<>(new ApiResponseError<>(e.getMessage(), HttpStatus.BAD_REQUEST.getReasonPhrase()),
+            return new ResponseEntity<>(new ApiResponseError<>(e.getMessage()),
                     HttpStatus.BAD_REQUEST);
         } else {
-            return new ResponseEntity<>(new ApiResponseError<>("Something went wrong, please try again later",
-                    HttpStatus.GONE.getReasonPhrase()), HttpStatus.GONE);
+            return new ResponseEntity<>(new ApiResponseError<>("Something went wrong, please try again later"), HttpStatus.GONE);
         }
     }
 }

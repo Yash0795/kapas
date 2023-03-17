@@ -6,8 +6,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -19,6 +19,11 @@ public class AppUtils {
 
     public static int generateRandomNumber(int min, int max) {
         return ThreadLocalRandom.current().nextInt(min, max + 1);
+    }
+
+    public static <T> boolean doesObjectContainField(Class<T> clazz, String fieldName) {
+        return Arrays.stream(clazz.getFields())
+                .anyMatch(f -> f.getName().equals(fieldName));
     }
 
     public static <T extends Comparable<? super T>> List<Predicate> getPredicateList(

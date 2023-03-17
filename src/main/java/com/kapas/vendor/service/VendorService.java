@@ -56,7 +56,7 @@ public class VendorService {
         return optionalVendor.orElseThrow(() -> new Exception("Vendor Not Found"));
     }
 
-    private void getVendorByNameAndMobile(String firstName, String lastName, String mobile) throws Exception {
+    private void validateVendorByNameAndMobile(String firstName, String lastName, String mobile) throws Exception {
         Optional<Vendor> optionalVendor = vendorRepository.findByNameAndMobile(firstName, lastName, mobile);
         if (optionalVendor.isPresent())
             throw new Exception("Vendor with first name, last name and mobile already exists");
@@ -89,9 +89,9 @@ public class VendorService {
         return stateCityMap;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     public VendorResponse createVendor(VendorRequest vendorRequest, User user) throws Exception {
-        getVendorByNameAndMobile(vendorRequest.getFirstName(), vendorRequest.getLastName(), vendorRequest.getMobile());
+        validateVendorByNameAndMobile(vendorRequest.getFirstName(), vendorRequest.getLastName(), vendorRequest.getMobile());
         validateVendorStateCity(vendorRequest.getState(), vendorRequest.getCity());
         Vendor vendor = vendorMapper.vendorRequestToVendor(vendorRequest, user);
         vendor = vendorRepository.persist(vendor);
@@ -105,13 +105,18 @@ public class VendorService {
     }
 
     @Transactional(readOnly = true)
-    public PaginatedResponse<VendorResponse> getAllVendors(int pageNo, int pageSize, String sortBy, String sortDir, VendorSearch vendorSearch) {
+    public PaginatedResponse<VendorResponse> getAllVendors(int pageNo, int pageSize, String sortBy, String sortDir,
+                                                           VendorSearch vendorSearch) throws Exception {
+        boolean validSortBy = AppUtils.doesObjectContainField(Vendor_.class, sortBy);
+        if(!validSortBy) {
+            throw new Exception("Sort by is not valid");
+        }
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Specification<Vendor> specification = (vendor, query, cb) -> {
-            vendor.fetch(Vendor_.vendorType, JoinType.INNER);
-            vendor.fetch(Vendor_.idType, JoinType.INNER);
+            vendor.fetch(Vendor_.VENDOR_TYPE, JoinType.INNER);
+            vendor.fetch(Vendor_.ID_TYPE, JoinType.INNER);
 
             List<SearchOperation<String>> searchOperationList = new ArrayList<>();
             searchOperationList.add(new SearchOperation<>(SearchOperationEnum.CONTAINS, vendor.get(Vendor_.FIRST_NAME),
@@ -139,15 +144,15 @@ public class VendorService {
         return vendorMapper.vendorToVendorResponse(vendors);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     public void deleteVendor(Integer vendorId) throws Exception {
         Vendor vendor = getVendorById(vendorId);
         vendorRepository.delete(vendor);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     public VendorResponse updateVendor(VendorRequest vendorRequest, User user, Integer vendorId) throws Exception {
-        getVendorByNameAndMobile(vendorRequest.getFirstName(), vendorRequest.getLastName(), vendorRequest.getMobile());
+        validateVendorByNameAndMobile(vendorRequest.getFirstName(), vendorRequest.getLastName(), vendorRequest.getMobile());
         validateVendorStateCity(vendorRequest.getState(), vendorRequest.getCity());
         Vendor vendor = getVendorById(vendorId);
         vendorMapper.updatedVendorRequestToVendor(vendorRequest, user, vendor);
