@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -117,23 +118,24 @@ public class VendorService {
         Specification<Vendor> specification = (vendor, query, cb) -> {
             vendor.fetch(Vendor_.VENDOR_TYPE, JoinType.INNER);
             vendor.fetch(Vendor_.ID_TYPE, JoinType.INNER);
+            List<Predicate> searchList = new ArrayList<>();
+            if(Objects.nonNull(vendorSearch)) {
+                List<SearchOperation<String>> searchOperationList = new ArrayList<>();
+                searchOperationList.add(new SearchOperation<>(SearchOperationEnum.CONTAINS, vendor.get(Vendor_.FIRST_NAME),
+                        vendorSearch.getName()));
+                searchOperationList.add(new SearchOperation<>(SearchOperationEnum.CONTAINS, vendor.get(Vendor_.LAST_NAME),
+                        vendorSearch.getName()));
+                searchOperationList.add(new SearchOperation<>(SearchOperationEnum.CONTAINS, vendor.get(Vendor_.MOBILE),
+                        vendorSearch.getMobile()));
+                searchOperationList.add(new SearchOperation<>(SearchOperationEnum.CONTAINS,
+                        vendor.get(Vendor_.VENDOR_TYPE).get(VendorType_.TYPE), vendorSearch.getVendorType()));
+                searchOperationList.add(new SearchOperation<>(SearchOperationEnum.CONTAINS,
+                        vendor.get(Vendor_.ID_TYPE).get(IdType_.TYPE), vendorSearch.getIdType()));
+                searchOperationList.add(new SearchOperation<>(SearchOperationEnum.CONTAINS,
+                        vendor.get(Vendor_.ID_NUMBER), vendorSearch.getIdNumber()));
 
-            List<SearchOperation<String>> searchOperationList = new ArrayList<>();
-            searchOperationList.add(new SearchOperation<>(SearchOperationEnum.CONTAINS, vendor.get(Vendor_.FIRST_NAME),
-                    vendorSearch.getName()));
-            searchOperationList.add(new SearchOperation<>(SearchOperationEnum.CONTAINS, vendor.get(Vendor_.LAST_NAME),
-                    vendorSearch.getName()));
-            searchOperationList.add(new SearchOperation<>(SearchOperationEnum.CONTAINS, vendor.get(Vendor_.MOBILE),
-                    vendorSearch.getMobile()));
-            searchOperationList.add(new SearchOperation<>(SearchOperationEnum.CONTAINS,
-                    vendor.get(Vendor_.VENDOR_TYPE).get(VendorType_.TYPE), vendorSearch.getVendorType()));
-            searchOperationList.add(new SearchOperation<>(SearchOperationEnum.CONTAINS,
-                    vendor.get(Vendor_.ID_TYPE).get(IdType_.TYPE), vendorSearch.getIdType()));
-            searchOperationList.add(new SearchOperation<>(SearchOperationEnum.CONTAINS,
-                    vendor.get(Vendor_.ID_NUMBER), vendorSearch.getIdNumber()));
-
-            List<Predicate> searchList = AppUtils.getPredicateList(searchOperationList, cb);
-
+                searchList = AppUtils.getPredicateList(searchOperationList, cb);
+            }
             if (searchList.isEmpty()) {
                 searchList.add(cb.conjunction());
             }
