@@ -29,6 +29,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import java.io.File;
@@ -116,8 +117,13 @@ public class VendorService {
                 : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Specification<Vendor> specification = (vendor, query, cb) -> {
-            vendor.fetch(Vendor_.VENDOR_TYPE, JoinType.INNER);
-            vendor.fetch(Vendor_.ID_TYPE, JoinType.INNER);
+            if(isCountQuery(query)) {
+                vendor.join(Vendor_.VENDOR_TYPE, JoinType.INNER);
+                vendor.join(Vendor_.ID_TYPE, JoinType.INNER);
+            } else {
+                vendor.fetch(Vendor_.VENDOR_TYPE, JoinType.INNER);
+                vendor.fetch(Vendor_.ID_TYPE, JoinType.INNER);
+            }
             List<Predicate> searchList = new ArrayList<>();
             if(Objects.nonNull(vendorSearch)) {
                 List<SearchOperation<String>> searchOperationList = new ArrayList<>();
@@ -144,6 +150,10 @@ public class VendorService {
 
         Page<Vendor> vendors = vendorRepository.findAll(specification, pageable);
         return vendorMapper.vendorToVendorResponse(vendors);
+    }
+
+    private boolean isCountQuery(CriteriaQuery<?> query) {
+        return query.getResultType() == long.class || query.getResultType() == Long.class;
     }
 
     @Transactional(rollbackFor = Throwable.class)
