@@ -15,4 +15,6 @@ public interface UserRepository extends BaseJpaRepository<User, Integer> {
 
     @Query("select u from User u join fetch u.role where u.id = :id")
     User findUserById(@Param("id") Integer id);
+
+    Optional<User> findUserByEmail(String email);
 }

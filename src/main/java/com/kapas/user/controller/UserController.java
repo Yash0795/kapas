@@ -6,6 +6,8 @@ import com.kapas.user.model.LoggedInUser;
 import com.kapas.user.model.Login;
 import com.kapas.user.model.PermissionEnum;
 import com.kapas.user.model.ScopeEnum;
+import com.kapas.user.model.UserRequest;
+import com.kapas.user.model.UserResponse;
 import com.kapas.user.service.UserService;
 import com.kapas.util.Constants;
 import lombok.RequiredArgsConstructor;
@@ -52,5 +54,12 @@ public class UserController {
     public ResponseEntity<String> test(HttpServletRequest request) {
         User user = (User) request.getAttribute(Constants.PRINCIPAL);
         return new ResponseEntity<>(user.getEmail(), HttpStatus.OK);
+    }
+
+    @PostMapping(value= "/register")
+    public ResponseEntity<UserResponse> saveUser(@Valid @RequestBody UserRequest userRequest, HttpServletRequest request) throws Exception {
+        User principal = (User) request.getAttribute(Constants.PRINCIPAL);
+        UserResponse userResponse = userService.createUser(principal, userRequest);
+        return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
     }
 }
