@@ -3,8 +3,10 @@ package com.kapas.user.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Getter
@@ -23,7 +25,8 @@ public class UserRequest {
     private String lastName;
 
     @NotBlank(message = "Email is mandatory")
-    @Size(min = 5, max = 75, message = "Email must be in the format xxx@xxx.com")
+    @Size(min = 5, max = 75, message = "Email must be between 5 and 75 characters")
+    @Email(message = "Email is not valid")
     private String email;
 
     @NotBlank(message = "Mobile is mandatory")
@@ -31,7 +34,8 @@ public class UserRequest {
     private String mobile;
 
     @NotBlank(message = "Password is mandatory")
-    @Size(min = 4, message = "Password must be of minimum 4 characters")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+    message = "Password must contain minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character (@$!%*?&)")
     private String password;
 
     @NotBlank(message = "Description is mandatory")

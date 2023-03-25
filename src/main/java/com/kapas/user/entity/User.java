@@ -60,10 +60,10 @@ public class User {
     @JoinColumn(name = "modified_by")
     private User modifiedBy;
 
-    @Column(name = "creation_time", nullable = false)
+    @Column(name = "creation_time", insertable = false)
     private Instant creationTime;
 
-    @Column(name = "modification_time")
+    @Column(name = "modification_time", insertable = false)
     private Instant modificationTime;
 
 }
