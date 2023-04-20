@@ -1,28 +1,25 @@
 package com.kapas.workorder.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class WorkflowTask {
 
-    private Integer task_number;
+    private Integer taskNumber;
 
-    private String task_id;
+    private String taskId;
 
-    private String task_name;
+    private String taskName;
 
     private String description;
 
-    private Boolean is_required;
+    private Boolean isRequired;
 
     private List<MetaDataField> fields;
 

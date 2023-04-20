@@ -1,19 +1,17 @@
 package com.kapas.workorder.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class MetaDataField {
 
-    private String key;
+    private String name;
 
-    private String value;
+    private String type;
 
-    private Boolean is_requierd;
+    private Boolean isRequired;
 }

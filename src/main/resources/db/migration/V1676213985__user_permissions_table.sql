@@ -99,6 +99,9 @@ CREATE TABLE `task`
     `assigned_to`       int NOT NULL,
     `is_active`         boolean DEFAULT TRUE,
     `task_number`       boolean NOT NULL,
+    `meta_data`         blob DEFAULT NULL,
+    `completed_by`      int DEFAULT
+     NULL,
     `created_by`        int NOT NULL,
     `modified_by`       int NOT NULL,
     `creation_time`     datetime DEFAULT CURRENT_TIMESTAMP,
@@ -198,39 +201,146 @@ VALUES ('admin', 'Admin', 'Admin', 'kapas_2023@gmail.com', '$2a$10$l3DiOh2JYd9pH
 INSERT INTO `workflow`(workflow_id, description, version, workflow_json, created_by, modified_by)
 VALUES ('SHRI_BALAJI_AGR_PROCUREMENT_PROCESS', 'This workflow is for the digital automation of the currently followed procuerement process at Shri Balaji Agro Pvt Ltd.', 1,
 "{
-    'workflow_id':'SHRI_BALAJI_AGR_PROCUREMENT_PROCESS',
-    'total_task':4,
-    'task':[
+  'workflowId': 'SHRI_BALAJI_AGR_PROCUREMENT_PROCESS',
+  'totalTask': 4,
+  'taskList': [
+    {
+      'taskNumber': 1,
+      'taskId': 'GENERATE_TOKEN',
+      'taskName': 'Generate Token',
+      'description': 'This task is assigned to user to insert vendor/vehicle details and generate token.',
+      'isRequired': true,
+      'fields': [
         {
-            'task_number':1,
-            'task_id':'GENERATE_TOKEN',
-            'task_name':'Generate Token',
-            'description':'',
-            'required':true
+          'name': 'vendor_fname',
+          'type': 'string',
+          'isRequired': true
         },
         {
-            'task_number':2,
-            'task_id':'GRADING',
-            'task_name':'Grade Cheking',
-            'description':'',
-            'required':true
+          'name': 'vendor_lname',
+          'type': 'string',
+          'isRequired': true
         },
         {
-            'task_number':3,
-            'task_id':'WEIGHING',
-            'task_name':'Item Weighing',
-            'description':'',
-            'required':true
+          'name': 'vendor_address',
+          'type': 'string',
+          'isRequired': true
         },
         {
-            'task_number':4,
-            'task_id':'UNLOADING',
-            'task_name':'Item Unloading',
-            'description':'',
-            'required':true
+          'name': 'vendor_state',
+          'type': 'string',
+          'isRequired': true
+        },
+        {
+          'name': 'vendor_city',
+          'type': 'string',
+          'isRequired': true
+        },
+        {
+          'name': 'vendor_mobile',
+          'type': 'string',
+          'isRequired': true
+        },
+        {
+          'name': 'vendor_id_type',
+          'type': 'string',
+          'isRequired': true
+        },
+        {
+          'name': 'vendor_id',
+          'type': 'string',
+          'isRequired': true
+        },
+        {
+          'name': 'vendor_vehicle',
+          'type': 'string',
+          'isRequired': true
+        },
+        {
+          'name': 'vendor_img',
+          'type': 'string',
+          'isRequired': true
+        },
+        {
+          'name': 'vendor_vehicle_img',
+          'type': 'string',
+          'isRequired': true
         }
-
-    ]
+      ]
+    },
+    {
+      'taskNumber': 2,
+      'taskId': 'GRADING',
+      'taskName': 'Sampling and Grading',
+      'description': 'This task is assigned to user to decide the cotton sample grade and insert grade/price details.',
+      'isRequired': true,
+      'fields': [
+        {
+          'name': 'grade',
+          'type': 'string',
+          'isRequired': true
+        },
+        {
+          'name': 'price',
+          'type': 'double',
+          'isRequired': true
+        },
+        {
+          'name': 'price_unit',
+          'type': 'string',
+          'isRequired': true
+        }
+      ]
+    },
+    {
+      'taskNumber': 3,
+      'taskId': 'WEIGHING',
+      'taskName': 'Cotton Weighing',
+      'description': 'This task is assigned to user to insert IN and OUT weight of cotton carrying vehicle.',
+      'isRequired': true,
+      'fields': [
+        {
+          'name': 'in_weight',
+          'type': 'double',
+          'isRequired': true
+        },
+        {
+          'name': 'out_weight',
+          'type': 'double',
+          'isRequired': true
+        },
+        {
+          'name': 'weigh_unit',
+          'type': 'string',
+          'isRequired': true
+        }
+      ]
+    },
+    {
+      'taskNumber': 4,
+      'taskId': 'UNLOADING',
+      'taskName': 'Cotton Unloading',
+      'description': 'This task is assigned to user to insert IN and OUT weight of cotton carrying vehicle.',
+      'isRequired': true,
+      'fields': [
+        {
+          'name': 'in_weight',
+          'type': 'double',
+          'isRequired': true
+        },
+        {
+          'name': 'out_weight',
+          'type': 'double',
+          'isRequired': true
+        },
+        {
+          'name': 'weigh_unit',
+          'type': 'string',
+          'isRequired': true
+        }
+      ]
+    }
+  ]
 }", 1, 1);
 
 -- CONSTRAINTS
@@ -254,7 +364,7 @@ ALTER TABLE `workorder`
     ADD CONSTRAINT `workorder_workflow_fk` FOREIGN KEY (`workflow_id_fk`) REFERENCES `workflow` (`id`);
 
 ALTER TABLE `workorder`
-    ADD CONSTRAINT `workorder_assigned_user_fk` FOREIGN KEY (`assigned_to`) REFERENCES `user` (`id`);
+    ADD CONSTRAINT `workorder_assigned_role_fk` FOREIGN KEY (`assigned_to`) REFERENCES `role` (`id`);
 
 ALTER TABLE `workorder`
     ADD CONSTRAINT `workorder_creation_user_fk` FOREIGN KEY (`created_by`) REFERENCES `user` (`id`);
@@ -266,7 +376,10 @@ ALTER TABLE `task`
     ADD CONSTRAINT `task_workorder_fk` FOREIGN KEY (`workorder_id_fk`) REFERENCES `workorder` (`id`);
 
 ALTER TABLE `task`
-    ADD CONSTRAINT `task_assigned_user_fk` FOREIGN KEY (`assigned_to`) REFERENCES `user` (`id`);
+    ADD CONSTRAINT `task_assigned_role_fk` FOREIGN KEY (`assigned_to`) REFERENCES `role` (`id`);
+
+ALTER TABLE `task`
+    ADD CONSTRAINT `task_completed_by_user_fk` FOREIGN KEY (`completed_by`) REFERENCES `user` (`id`);
 
 ALTER TABLE `task`
     ADD CONSTRAINT `task_creation_user_fk` FOREIGN KEY (`created_by`) REFERENCES `user` (`id`);

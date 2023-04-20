@@ -1,14 +1,16 @@
 package com.kapas.workorder.entity;
 
 
+import com.kapas.user.entity.Role;
+import com.kapas.user.entity.Role_;
 import com.kapas.user.entity.User;
-import com.kapas.workorder.model.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Getter
@@ -17,44 +19,77 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Entity
 @Table(name = "task")
-public class Task {
+public class Task implements Serializable {
+
+    public enum Status {
+        NOT_STARTED("NOT STARTED"),
+        IN_PROGRESS("IN PROGRESS"),
+        COMPLETED("COMPLETED"),
+        RE_OPENED("RE OPENED"),
+        CLOSED("CLOSED");
+
+        private String status;
+
+        private String getStatus() {
+            return this.status;
+        }
+
+        private Status(String status) {
+            this.status = status;
+        }
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    private String task_id;
+    @Column(name = "task_id", nullable = false)
+    private String taskId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "workorder_id_fk", nullable = false)
     private Workorder workorder;
 
+    @Column(name = "title", nullable = false)
     private String title;
 
+    @Column(name = "remark", nullable = false)
     private String remark;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private Status status;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "assigned_to", nullable = false)
+    private Role assignedTo;
 
-    private User assigned_to;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "completed_by", nullable = false)
+    private User completedBy;
 
-    private Boolean is_active;
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
 
-    private Integer task_number;
+    @Column(name = "task_number", nullable = false)
+    private Integer taskNumber;
+
+    @Column(name = "meta_data", nullable = false)
+    private String metaData;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_by", nullable = false)
-    private User created_by;
+    private User createdBy;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "modified_by", nullable = false)
-    private User modified_by;
+    private User modifiedBy;
 
-    private Timestamp creation_time;
+    @Column(name = "creation_time", nullable = false, insertable = false)
+    private Timestamp creationTime;
 
-    private Timestamp modification_time;
+    @Column(name = "modification_time", nullable = false, insertable = false)
+    private Timestamp modificationTime;
 
 }

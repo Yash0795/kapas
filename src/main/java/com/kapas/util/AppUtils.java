@@ -1,14 +1,14 @@
 package com.kapas.util;
 
+import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AppUtils {
@@ -83,4 +83,19 @@ public class AppUtils {
                 return null;
         }
     }
+
+    public static <T extends Object> T parseJSON(String jsonString, Class<T> type) {
+        return new Gson().fromJson(jsonString, type);
+    }
+
+    public static String todaysDateString(String format) {
+        DateFormat dateFormat = new SimpleDateFormat(format);
+        Date today = Calendar.getInstance().getTime();
+        return dateFormat.format(today);
+    }
+
+    public static String leftPad(String str, Integer paddingCount, String paddedWith) {
+        return String.format("%" + paddingCount + "s", str).replace(" ", paddedWith);
+    }
+
 }
