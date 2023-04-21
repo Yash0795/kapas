@@ -13,5 +13,5 @@ public class MetaDataField {
 
     private String type;
 
-    private Boolean isRequired;
+    private boolean isRequired;
 }

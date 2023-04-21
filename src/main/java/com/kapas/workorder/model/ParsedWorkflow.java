@@ -17,11 +17,11 @@ public class ParsedWorkflow {
 
     private String workflowId;
 
-    private Integer version;
+    private int version;
 
     private String description;
 
-    private Integer totalTask;
+    private int totalTask;
 
     private List<WorkflowTask> taskList;
 

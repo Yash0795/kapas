@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.kapas.user.entity.Role;
 import com.kapas.user.entity.User;
 import com.kapas.user.repository.RoleRepository;
-import com.kapas.user.service.UserService;
 import com.kapas.util.AppUtils;
 import com.kapas.workorder.entity.Task;
 import com.kapas.workorder.entity.Workflow;
@@ -15,17 +14,17 @@ import com.kapas.workorder.model.WorkflowTask;
 import com.kapas.workorder.repository.TaskRepository;
 import com.kapas.workorder.repository.WorkorderRepository;
 import com.kapas.workorder.util.WorkorderUtils;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class WorkorderService {
 
     private static final Logger logger = LoggerFactory.getLogger(WorkorderService.class);
@@ -34,16 +33,6 @@ public class WorkorderService {
     private final WorkorderRepository workorderRepository;
     private final TaskRepository taskRepository;
     private final RoleRepository roleRepository;
-
-    public WorkorderService(WorkflowService workflowService,
-                            WorkorderRepository workorderRepository,
-                            TaskRepository taskRepository,
-                            RoleRepository roleRepository) {
-        this.workflowService = workflowService;
-        this.workorderRepository = workorderRepository;
-        this.taskRepository = taskRepository;
-        this.roleRepository = roleRepository;
-    }
 
     public Workorder createWorkorder(String workflowId, String workorderIdSuffix, User currentUser) {
         Workorder workorder = new Workorder();
@@ -120,7 +109,7 @@ public class WorkorderService {
         task.setModifiedBy(currentUser);
 
         for(MetaDataField field : workflowTask.getFields()) {
-            if(field.getIsRequired() & !metaData.containsKey(field.getName())) {
+            if(field.isRequired() & !metaData.containsKey(field.getName())) {
                 throw new NoSuchFieldException(
                         String.format("Field '%s' is required but not found.", field.getName()));
             }

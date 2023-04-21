@@ -4,21 +4,19 @@ import com.kapas.util.AppUtils;
 import com.kapas.workorder.entity.Workflow;
 import com.kapas.workorder.model.ParsedWorkflow;
 import com.kapas.workorder.repository.WorkflowRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 
 @Service
+@RequiredArgsConstructor
 public class WorkflowService {
 
     private static final Logger logger = LoggerFactory.getLogger(WorkflowService.class);
 
     private final WorkflowRepository workflowRepository;
-
-    public WorkflowService(WorkflowRepository workflowRepository) {
-        this.workflowRepository = workflowRepository;
-    }
 
     public ParsedWorkflow loadWorkflow(String workflowId){
 

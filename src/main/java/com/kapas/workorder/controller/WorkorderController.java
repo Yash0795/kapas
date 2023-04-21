@@ -4,29 +4,27 @@ import com.kapas.user.entity.User;
 import com.kapas.util.Constants;
 import com.kapas.workorder.entity.Task;
 import com.kapas.workorder.entity.Workorder;
-import com.kapas.workorder.model.ParsedWorkflow;
-import com.kapas.workorder.service.WorkflowService;
 import com.kapas.workorder.service.WorkorderService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 public class WorkorderController {
 
     private static final Logger logger = LoggerFactory.getLogger(WorkorderController.class);
 
     private final WorkorderService workorderService;
-
-    public WorkorderController(WorkorderService workorderService) {
-        this.workorderService = workorderService;
-    }
 
     @GetMapping(value = "/createWorkorder")
     public ResponseEntity<Workorder> createWorkorder(String workflowId,

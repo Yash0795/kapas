@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -15,13 +14,8 @@ public class WorkorderUtils {
 
     Logger logger = LoggerFactory.getLogger(WorkorderUtils.class);
 
-    private static String workorderIdPrefix = "WO";
-
     public static String createWorkorderId(String suffix) {
-        String workorderId = workorderIdPrefix;
-        workorderId += "_" + AppUtils.todaysDateString("dd-MM-YYYY");
-        workorderId += "_" + suffix;
-        return workorderId;
+        return "WO_" + AppUtils.todaysDateString("dd-MM-YYYY") + "_" + suffix;
     }
 
     public static Map<String, WorkflowTask> getTaskMapByTaskId(List<WorkflowTask> taskList) {
