@@ -39,20 +39,45 @@ public class WorkorderController {
         return new ResponseEntity<>(workorder, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/createTask")
-    public ResponseEntity<Task> createTask(String workorderId,
-                                           String taskId,
-                                           String assignedToRoleName,
-                                           @RequestBody Map<String, Object> metaData,
-                                           HttpServletRequest request) throws Exception {
+    @GetMapping(value = "/createAndStartWorkorder")
+    public ResponseEntity<Task> createAndStartWorkorder(String workflowId,
+                                                     String workorderIdSuffix,
+                                                     HttpServletRequest request) throws Exception {
         User currentUser = (User) request.getAttribute(Constants.PRINCIPAL);
-        logger.info("Getting workorderId : {}, taskId : {}, assignedToRoleName : {}, " +
-                        "metaData : {}, currentUserId: {}", workorderId, taskId, assignedToRoleName,
-                metaData, currentUser.getId());
-        Task task = workorderService.createTask(workorderId, taskId, assignedToRoleName, metaData, currentUser);
+        logger.info("Getting workflowId : {}, workorderIdSuffix : {}, currentUserId: {}", workflowId,
+                workorderIdSuffix, currentUser.getId());
+        Task task = workorderService.createAndStartWorkorder(workflowId, workorderIdSuffix, currentUser);
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/startWorkorder")
+    public ResponseEntity<String> startWorkorder(String workorderId,
+                                                        HttpServletRequest request) throws Exception {
+        User currentUser = (User) request.getAttribute(Constants.PRINCIPAL);
+        logger.info("Getting workorderId : {}, currentUserId: {}",
+                workorderId, currentUser.getId());
+        workorderService.startWorkorder(workorderId, currentUser);
+        return new ResponseEntity<>("Workorder is started.", HttpStatus.OK);
+    }
 
+    @GetMapping(value = "/closeWorkorder")
+    public ResponseEntity<String> closeWorkorder(String workorderId,
+                                                 HttpServletRequest request) throws Exception {
+        User currentUser = (User) request.getAttribute(Constants.PRINCIPAL);
+        logger.info("Getting workorderId : {}, currentUserId: {}",
+                workorderId, currentUser.getId());
+        workorderService.closeWorkorder(workorderId, currentUser);
+        return new ResponseEntity<>("Workorder is closed.", HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/completeWorkorder")
+    public ResponseEntity<String> completeWorkorder(String workorderId,
+                                                 HttpServletRequest request) throws Exception {
+        User currentUser = (User) request.getAttribute(Constants.PRINCIPAL);
+        logger.info("Getting workorderId : {}, currentUserId: {}",
+                workorderId, currentUser.getId());
+        workorderService.completeWorkorder(workorderId, currentUser);
+        return new ResponseEntity<>("Workorder is completed.", HttpStatus.OK);
+    }
 
 }

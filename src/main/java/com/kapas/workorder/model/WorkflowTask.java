@@ -19,6 +19,8 @@ public class WorkflowTask {
 
     private String description;
 
+    private String assignedToRoleName;
+
     private Boolean isRequired;
 
     private List<MetaDataField> fields;

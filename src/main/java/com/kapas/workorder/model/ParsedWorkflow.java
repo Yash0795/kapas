@@ -21,9 +21,13 @@ public class ParsedWorkflow {
 
     private String description;
 
+    private Boolean autoComplete;
+
     private Integer totalTask;
 
     private List<WorkflowTask> taskList;
+
+    private String assignedToRoleName;
 
     private User createdBy;
 
