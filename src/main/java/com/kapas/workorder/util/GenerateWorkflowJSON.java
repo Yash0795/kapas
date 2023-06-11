@@ -23,7 +23,7 @@ public class GenerateWorkflowJSON {
         task1.setTaskNumber(1);
         task1.setTaskName("Generate Token");
         task1.setDescription("This task is assigned to user to insert vendor/vehicle details and generate token.");
-        task1.setIsRequired(true);
+        task1.setRequired(true);
         List<MetaDataField> fields1 = new ArrayList<>();
         fields1.add(new MetaDataField("vendor_fname","string",true));
         fields1.add(new MetaDataField("vendor_lname","string",true));
@@ -43,7 +43,7 @@ public class GenerateWorkflowJSON {
         task2.setTaskNumber(2);
         task2.setTaskName("Sampling and Grading");
         task2.setDescription("This task is assigned to user to decide the cotton sample grade and insert grade/price details.");
-        task2.setIsRequired(true);
+        task2.setRequired(true);
         List<MetaDataField> fields2 = new ArrayList<>();
         fields2.add(new MetaDataField("grade","string",true));
         fields2.add(new MetaDataField("price","double",true));
@@ -55,7 +55,7 @@ public class GenerateWorkflowJSON {
         task3.setTaskNumber(3);
         task3.setTaskName("Cotton Weighing");
         task3.setDescription("This task is assigned to user to insert IN and OUT weight of cotton carrying vehicle.");
-        task3.setIsRequired(true);
+        task3.setRequired(true);
         List<MetaDataField> fields3 = new ArrayList<>();
         fields3.add(new MetaDataField("in_weight","double",true));
         fields3.add(new MetaDataField("out_weight","double",true));
@@ -67,7 +67,7 @@ public class GenerateWorkflowJSON {
         task4.setTaskNumber(4);
         task4.setTaskName("Cotton Weighing");
         task4.setDescription("This task is assigned to user to insert IN and OUT weight of cotton carrying vehicle.");
-        task4.setIsRequired(true);
+        task4.setRequired(true);
         List<MetaDataField> fields4 = new ArrayList<>();
         fields4.add(new MetaDataField("in_weight","double",true));
         fields4.add(new MetaDataField("out_weight","double",true));

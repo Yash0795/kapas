@@ -1,0 +1,405 @@
+{
+	"info": {
+		"_postman_id": "48d9b52f-270f-4b77-86fb-685028d7e9b2",
+		"name": "kapas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userName\":\"admin\",\n    \"password\":\"admin\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/login",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Session-Id",
+						"value": "ToPJEkeBHlgG2-Xwbdx3T02dn9neWaX7z5Dtsn7whCo=",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/logout",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout of all devices",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Session-Id",
+						"value": "ToPPEkeBHlgG2-L9ad9zSmvmrtpH58vIi-9YemSL0fI=",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/sessions",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"sessions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Vendor",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Session-Id",
+						"value": "ToPKEkeBHlcC2OL_ad90T9MQNn7gVJ4xzKT2ssFnDY0=",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"Vendor 1\",\n    \"lastName\": \"Vendor1Lname\",\n    \"mobile\": \"9999999999\",\n    \"address\": \"test address\",\n    \"state\": \"Madhya Pradesh\",\n    \"city\": \"Indore\",\n    \"vendorType\": \"Farmer\",\n    \"idType\": \"Aadhar Card\",\n    \"idNumber\": \"999999999999\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/vendor",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"vendor"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Vendor By Id",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Session-Id",
+						"value": "ToPKEkeBHlcC2OL_ad90T9MQNn7gVJ4xzKT2ssFnDY0=",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8080/vendor/1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"vendor",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Vendors",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Session-Id",
+						"value": "ToPKEkeBHlcC2OL_ad90T9MQNn7gVJ4xzKT2ssFnDY0=",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Vendor 2\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/vendor/search",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"vendor",
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Session-Id",
+						"value": "ToPMF0CAHlgJ3-_-adBySovMK5LxRIUOBZkFEM5m1VCh",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8080/test",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Vendor",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Session-Id",
+						"value": "ToPKEkeBHlcC2OL_ad90T9MQNn7gVJ4xzKT2ssFnDY0=",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"Vendor 1 update2\",\n    \"lastName\": \"Vendor1Lname\",\n    \"mobile\": \"88888888888\",\n    \"address\": \"test address2\",\n    \"state\": \"Madhya Pradesh\",\n    \"city\": \"Indore\",\n    \"vendorType\": \"Farmer\",\n    \"idType\": \"Aadhar Card\",\n    \"idNumber\": \"999999999999\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/vendor/1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"vendor",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Vendor",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Session-Id",
+						"value": "ToPKEkeBHlcC2OL_ad90T9MQNn7gVJ4xzKT2ssFnDY0=",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8080/vendor/5",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"vendor",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register User",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Session-Id",
+						"value": "ToPMFUCAHlYG2eX4adtzQ49EOCbxDMMbe-NaicNFlV8T",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userName\": \"rajat4\",\n    \"firstName\":\"Rajat\",\n    \"lastName\":\"Gupta\",\n    \"email\":\"test1+123@test.com\",\n    \"password\":\"Test123456!\",\n    \"mobile\":\"9999999999\",\n    \"description\":\"test\",\n    \"roleId\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/register",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
