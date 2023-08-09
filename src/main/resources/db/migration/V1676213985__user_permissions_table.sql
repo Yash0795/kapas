@@ -77,7 +77,6 @@ CREATE TABLE `workorder`
     `is_active`         boolean DEFAULT TRUE,
     `meta_data`         blob DEFAULT NULL,
     `workflow_id_fk`    int NOT NULL,
-    `assigned_to`       int NOT NULL,
     `created_by`        int NOT NULL,
     `modified_by`       int NOT NULL,
     `creation_time`     datetime DEFAULT CURRENT_TIMESTAMP,
@@ -96,7 +95,6 @@ CREATE TABLE `task`
     `title`             varchar(100),
     `remark`            varchar(175) DEFAULT NULL,
     `status`            enum ('NOT_STARTED','IN_PROGRESS','COMPLETED','RE_OPENED', 'CLOSED') DEFAULT 'NOT_STARTED',
-    `assigned_to`       int NOT NULL,
     `is_active`         boolean DEFAULT TRUE,
     `task_number`       boolean NOT NULL,
     `meta_data`         blob DEFAULT NULL,
@@ -251,8 +249,7 @@ ALTER TABLE `role`
 ALTER TABLE `workorder`
     ADD CONSTRAINT `workorder_workflow_fk` FOREIGN KEY (`workflow_id_fk`) REFERENCES `workflow` (`id`);
 
-ALTER TABLE `workorder`
-    ADD CONSTRAINT `workorder_assigned_role_fk` FOREIGN KEY (`assigned_to`) REFERENCES `role` (`id`);
+-- ALTER TABLE `workorder` ADD CONSTRAINT `workorder_assigned_role_fk` FOREIGN KEY (`assigned_to`) REFERENCES `role` (`id`);
 
 ALTER TABLE `workorder`
     ADD CONSTRAINT `workorder_creation_user_fk` FOREIGN KEY (`created_by`) REFERENCES `user` (`id`);
@@ -263,8 +260,7 @@ ALTER TABLE `workorder`
 ALTER TABLE `task`
     ADD CONSTRAINT `task_workorder_fk` FOREIGN KEY (`workorder_id_fk`) REFERENCES `workorder` (`id`);
 
-ALTER TABLE `task`
-    ADD CONSTRAINT `task_assigned_role_fk` FOREIGN KEY (`assigned_to`) REFERENCES `role` (`id`);
+-- ALTER TABLE `task` ADD CONSTRAINT `task_assigned_role_fk` FOREIGN KEY (`assigned_to`) REFERENCES `role` (`id`);
 
 ALTER TABLE `task`
     ADD CONSTRAINT `task_completed_by_user_fk` FOREIGN KEY (`completed_by`) REFERENCES `user` (`id`);

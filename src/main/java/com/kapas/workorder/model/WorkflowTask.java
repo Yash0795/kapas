@@ -11,18 +11,18 @@ import java.util.List;
 @ToString
 public class WorkflowTask {
 
-    private Integer taskNumber;
+    Integer taskNumber;
 
-    private String taskId;
+    String taskId;
 
-    private String taskName;
+    String taskName;
 
-    private String description;
+    String description;
 
-    private String assignedToRoleName;
+    String permissionName;
 
-    private Boolean isRequired;
+    Boolean isRequired;
 
-    private List<MetaDataField> fields;
+    List<MetaDataField> fields;
 
 }

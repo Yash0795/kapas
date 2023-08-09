@@ -74,12 +74,12 @@ public class TaskController {
         return new ResponseEntity<>("Task closed.", HttpStatus.OK);
     }
 
-    @GetMapping(value = "/tasks")
+/*    @GetMapping(value = "/tasks")
     public ResponseEntity<String> tasks(HttpServletRequest request) throws Exception {
         User currentUser = (User) request.getAttribute(Constants.PRINCIPAL);
         logger.info("Getting currentUserId: {}", currentUser.getId());
         taskService.getCurrentUserTasks(currentUser);
         return new ResponseEntity<>("Task closed.", HttpStatus.OK);
-    }
+    }*/
 
 }

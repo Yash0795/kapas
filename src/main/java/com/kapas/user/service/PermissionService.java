@@ -30,13 +30,22 @@ public class PermissionService {
         }
     }
 
-    private boolean hasScopeAndPermission(Role userRole, String scope, String permission) {
+    public boolean hasScopeAndPermission(Role userRole, String scope, String permission) {
         Set<Scope> scopes = userRole.getScopes().stream()
                 .filter(s -> s.getName().equals(scope))
                 .collect(Collectors.toSet());
         if (scopes.isEmpty()) {
             return false;
         }
+        Set<Permission> permissions = scopes.stream()
+                .flatMap(s -> s.getPermissions().stream())
+                .filter(p -> p.getName().equals(permission))
+                .collect(Collectors.toSet());
+        return !permissions.isEmpty();
+    }
+
+    public boolean hasPermission(Role userRole, String permission) {
+        Set<Scope> scopes = userRole.getScopes();
         Set<Permission> permissions = scopes.stream()
                 .flatMap(s -> s.getPermissions().stream())
                 .filter(p -> p.getName().equals(permission))

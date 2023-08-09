@@ -13,28 +13,20 @@ import java.util.List;
 @ToString
 public class ParsedWorkflow {
 
-    private Integer id;
+    Integer id;
 
-    private String workflowId;
+    String workflowId;
 
-    private Integer version;
+    Integer version;
 
-    private String description;
+    String description;
 
-    private Boolean autoComplete;
+    Boolean autoComplete;
 
-    private Integer totalTask;
+    Integer totalTask;
 
-    private List<WorkflowTask> taskList;
+    List<WorkflowTask> taskList;
 
-    private String assignedToRoleName;
-
-    private User createdBy;
-
-    private User modifiedBy;
-
-    private Timestamp creationTime;
-
-    private Timestamp modificationTime;
+    String permissionName;
 
 }

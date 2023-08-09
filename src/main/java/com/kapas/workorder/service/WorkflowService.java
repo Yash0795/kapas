@@ -22,16 +22,13 @@ public class WorkflowService {
 
         Workflow workflow =
                 workflowRepository.getLatestWorkflowByWorkflowId(workflowId);
-        logger.debug("Getting result workflow : {} ", workflow);
+        logger.info("Getting result workflow : {} ", workflow);
 
         ParsedWorkflow parsedWorkflow = AppUtils.parseJSON(workflow.getWorkflowJson(), ParsedWorkflow.class);
         parsedWorkflow.setVersion(workflow.getVersion());
         parsedWorkflow.setId(workflow.getId());
-        parsedWorkflow.setCreatedBy(workflow.getCreatedBy());
-        parsedWorkflow.setModifiedBy(workflow.getModifiedBy());
-        parsedWorkflow.setCreationTime(workflow.getCreationTime());
-        parsedWorkflow.setModificationTime(workflow.getModificationTime());
-        logger.debug("Getting parsed parsedWorkflow : {} ", parsedWorkflow);
+
+        logger.info("Getting parsed parsedWorkflow : {} ", parsedWorkflow);
 
         return parsedWorkflow;
     }

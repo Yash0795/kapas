@@ -14,5 +14,5 @@ public interface TaskRepository extends CrudRepository<Task, Integer> {
 
     Task getTaskByTaskId(String taskId);
 
-    List<Task> getTasksByRole(Role role);
+    //List<Task> getTasksByRole(Role role);
 }

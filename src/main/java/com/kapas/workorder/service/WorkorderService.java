@@ -4,6 +4,7 @@ package com.kapas.workorder.service;
 import com.kapas.user.entity.Role;
 import com.kapas.user.entity.User;
 import com.kapas.user.repository.RoleRepository;
+import com.kapas.user.service.PermissionService;
 import com.kapas.workorder.entity.Task;
 import com.kapas.workorder.entity.Workflow;
 import com.kapas.workorder.entity.Workorder;
@@ -26,16 +27,15 @@ public class WorkorderService {
     private final WorkflowService workflowService;
     private final TaskService taskService;
     private final WorkorderRepository workorderRepository;
-    private final RoleRepository roleRepository;
-
+    private final PermissionService permissionService;
     public WorkorderService(WorkflowService workflowService,
                             TaskService taskService,
                             WorkorderRepository workorderRepository,
-                            RoleRepository roleRepository) {
+                            PermissionService permissionService) {
         this.workflowService = workflowService;
         this.taskService = taskService;
         this.workorderRepository = workorderRepository;
-        this.roleRepository = roleRepository;
+        this.permissionService = permissionService;
 
     }
 
@@ -63,11 +63,12 @@ public class WorkorderService {
     }
 
     public Workorder createWorkorder(ParsedWorkflow parsedWorkflow, String workorderIdSuffix, User currentUser) {
-        Role assignedTo = roleRepository.getRoleByRoleName(parsedWorkflow.getAssignedToRoleName());
-        if(assignedTo == null)
-            throw new NoResultException(String.format("No Role found with the given Role Name: '%s'",
-                    parsedWorkflow.getAssignedToRoleName()));
-        logger.info("Getting Assigned To Role: {}", assignedTo);
+
+        boolean hasPermission = permissionService.hasPermission(currentUser.getRole(),
+                parsedWorkflow.getPermissionName());
+        if(!hasPermission)
+            throw new UnsupportedOperationException(String.format("Current user has no permission to perform " +
+                    "the requested operation."));
 
         Workorder workorder = new Workorder();
 
@@ -80,7 +81,6 @@ public class WorkorderService {
         Workflow workflow = new Workflow();
         workflow.setId(parsedWorkflow.getId());
         workorder.setWorkflow(workflow);
-        workorder.setAssignedTo(assignedTo);
         workorder.setCreatedBy(currentUser);
         workorder.setModifiedBy(currentUser);
         return workorderRepository.save(workorder);

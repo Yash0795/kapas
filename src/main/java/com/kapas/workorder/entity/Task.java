@@ -71,10 +71,6 @@ public class Task implements Serializable {
     private Status status;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "assigned_to", nullable = false)
-    private Role assignedTo;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "completed_by", nullable = false)
     private User completedBy;
 

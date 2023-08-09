@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.kapas.user.entity.Role;
 import com.kapas.user.entity.User;
 import com.kapas.user.repository.RoleRepository;
+import com.kapas.user.service.PermissionService;
 import com.kapas.util.AppUtils;
 import com.kapas.workorder.entity.Task;
 import com.kapas.workorder.entity.Workorder;
@@ -26,24 +27,21 @@ public class TaskService {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskService.class);
 
-    private final WorkflowService workflowService;
-    private final WorkorderService workorderService;
+    private final WorkorderRepository workorderRepository;
     private final TaskRepository taskRepository;
-    private final RoleRepository roleRepository;
+    private final PermissionService permissionService;
 
-    public TaskService(WorkflowService workflowService,
-                       WorkorderService workorderService,
+    public TaskService(WorkorderRepository workorderRepository,
                             TaskRepository taskRepository,
-                            RoleRepository roleRepository) {
-        this.workflowService = workflowService;
-        this.workorderService = workorderService;
+                       PermissionService permissionService) {
+        this.workorderRepository = workorderRepository;
         this.taskRepository = taskRepository;
-        this.roleRepository = roleRepository;
+        this.permissionService = permissionService;
     }
 
     public Task createTask(String workorderId, String taskId, User currentUser) {
 
-        Workorder workorder = workorderService.getWorkorderByWorkorderId(workorderId);
+        Workorder workorder = workorderRepository.getWorkorderByWorkorderId(workorderId);
         if(workorder == null)
             throw new NoResultException(
                     String.format("No workorder found with the given workorder id: '%s'", workorderId));
@@ -69,11 +67,11 @@ public class TaskService {
         WorkflowTask workflowTask = taskMap.get(taskId);
         logger.info("Getting workflow Task : {} ", workflowTask);
 
-        Role assignedTo = roleRepository.getRoleByRoleName(workflowTask.getAssignedToRoleName());
-        if(assignedTo == null)
-            throw new NoResultException(String.format("No Role found with the given Role Name: '%s'",
-                    workflowTask.getAssignedToRoleName()));
-        logger.info("Getting Assigned To Role: {}", assignedTo);
+        boolean hasPermission = permissionService.hasPermission(currentUser.getRole(),
+                workflowTask.getPermissionName());
+        if(!hasPermission)
+            throw new UnsupportedOperationException(String.format("Current user has no permission to perform " +
+                            "requested operation."));
 
         Task task = new Task();
         task.setTaskId(WorkorderUtils.createTaskId(workorder.getWorkorderId(), taskId));
@@ -82,7 +80,6 @@ public class TaskService {
         task.setWorkorder(workorder);
         task.setTaskNumber(workflowTask.getTaskNumber());
         task.setIsActive(true);
-        task.setAssignedTo(assignedTo);
         task.setCreatedBy(currentUser);
         task.setModifiedBy(currentUser);
 
@@ -98,11 +95,6 @@ public class TaskService {
             throw new NoResultException(
                     String.format("No Task found with the given task id: '%s'", task));
         logger.info("Getting Task: {}", task);
-
-        if(!task.getAssignedTo().equals(currentUser.getRole()))
-            throw new IllegalAccessException(
-                    String.format("Task is not assigned to the current User. User ID : {}",
-                            currentUser.getId()));
 
         completeTask(task.getWorkorder(), task, taskData, currentUser);
     }
@@ -129,15 +121,16 @@ public class TaskService {
                              User currentUser) throws NoSuchFieldException, IllegalAccessException,
             UnsupportedOperationException{
 
-        if(!task.getAssignedTo().equals(currentUser.getRole()))
-            throw new IllegalAccessException(
-                    String.format("Task is not assigned to the current User. User ID : {}",
-                            currentUser.getId()));
-
         validateIfTaskNotCompleted(task);
 
         Map<String, WorkflowTask> taskMap = WorkorderUtils.getTaskMapByTaskId(parsedWorkflow.getTaskList());
         WorkflowTask workflowTask = taskMap.get(WorkorderUtils.getTaskIdSuffix(task.getTaskId()));
+
+        boolean hasPermission = permissionService.hasPermission(currentUser.getRole(),
+                workflowTask.getPermissionName());
+        if(!hasPermission)
+            throw new UnsupportedOperationException(String.format("Current user has no permission to perform " +
+                    "requested operation."));
 
         validateTaskMetaFields(workflowTask, taskData);
 
@@ -157,7 +150,7 @@ public class TaskService {
 
     private void validateTaskMetaFields(WorkflowTask workflowTask, Map<String, Object> taskData) throws NoSuchFieldException {
         for(MetaDataField field : workflowTask.getFields()) {
-            if(field.getIsRequired() && !taskData.containsKey(field.getName())) {
+            if(field.isRequired() && !taskData.containsKey(field.getName())) {
                 throw new NoSuchFieldException(
                         String.format("Field '%s' is required but not found.", field.getName()));
             }
@@ -167,7 +160,7 @@ public class TaskService {
     public void completeWorkorderOrCreateNextTask(ParsedWorkflow parsedWorkflow, WorkflowTask workflowTask,
                                                    Workorder workorder, User currentUser) throws NoSuchFieldException {
         if(parsedWorkflow.getAutoComplete() && workflowTask.getTaskNumber() == parsedWorkflow.getTotalTask()) {
-            workorderService.completeWorkorder(workorder, currentUser);
+            completeWorkorder(workorder, currentUser);
         } else {
             Map<Integer, WorkflowTask> taskNumberTaskMap =
                     WorkorderUtils.getTaskMapByTaskNumber(parsedWorkflow.getTaskList());
@@ -194,7 +187,7 @@ public class TaskService {
         task.setModifiedBy(currentUser);
         taskRepository.save(task);
         workorder.setModifiedBy(currentUser);
-        workorderService.save(workorder);
+        workorderRepository.save(workorder);
     }
 
     public void closeTask(String taskId, String remark, User currentUser) {
@@ -212,11 +205,17 @@ public class TaskService {
         if(remark != null) task.setRemark(remark);
         taskRepository.save(task);
         workorder.setModifiedBy(currentUser);
-        workorderService.save(workorder);
+        workorderRepository.save(workorder);
     }
 
-    public List<Task> getCurrentUserTasks(User currentUser) {
+/*    public List<Task> getCurrentUserTasks(User currentUser) {
         Role role = currentUser.getRole();
         return taskRepository.getTasksByRole(role);
+    }*/
+
+    public void completeWorkorder(Workorder workorder, User currentUser) {
+        workorder.setStatus(Workorder.Status.COMPLETED);
+        workorder.setModifiedBy(currentUser);
+        workorderRepository.save(workorder);
     }
 }
