@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,8 +15,20 @@ public class WorkorderUtils {
 
     Logger logger = LoggerFactory.getLogger(WorkorderUtils.class);
 
+    public static String workorderIdPrefix = "WO";
+    public static Integer workorderIDLeftPaddingCount = 3;
+
+    public static String workorderIDLeftPaddedWith = "0";
+
+    public static String workorderIDDateFormate = "ddMMyyyy";
+
+
+
     public static String createWorkorderId(String suffix) {
-        return "WO_" + AppUtils.todaysDateString("dd-MM-YYYY") + "_" + suffix;
+        String workorderId = workorderIdPrefix;
+        workorderId += "-" + AppUtils.todaysDateString(workorderIDDateFormate);
+        if(suffix != null) workorderId += "-" + suffix;
+        return workorderId;
     }
 
     public static Map<String, WorkflowTask> getTaskMapByTaskId(List<WorkflowTask> taskList) {
@@ -23,17 +36,17 @@ public class WorkorderUtils {
                         workflowTask -> workflowTask));
     }
 
-    public static void main(String[] args) {
-        List<WorkflowTask> taskList = new ArrayList<>();
-        WorkflowTask t1 = new WorkflowTask();
-        t1.setTaskId("AAA");
-        WorkflowTask t2 = new WorkflowTask();
+    public static Map<Integer, WorkflowTask> getTaskMapByTaskNumber(List<WorkflowTask> taskList) {
+        return taskList.stream().collect(Collectors.toMap(WorkflowTask::getTaskNumber,
+                workflowTask -> workflowTask));
+    }
 
-        t2.setTaskId("BBB");
+    public static String createTaskId(String workorderId, String taskId) {
+        return workorderId + "-" + taskId;
+    }
 
-        taskList.add(t1);
-        taskList.add(t2);
-        System.out.println(getTaskMapByTaskId(taskList));
-
+    public static String getTaskIdSuffix(String taskId) {
+        String[] taskIdArray = taskId.split("-");
+        return taskIdArray[taskIdArray.length-1];
     }
 }

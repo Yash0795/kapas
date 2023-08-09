@@ -29,7 +29,8 @@ public class ProcurementController {
                                                @RequestBody Map<String, Object> metaData,
                                                HttpServletRequest request) throws Exception {
         User currentUser = (User) request.getAttribute(Constants.PRINCIPAL);
-        logger.info("Getting workflowId : {}, metaData : {}, current User Id: {}", workflowId, metaData, currentUser.getId());
+        logger.info("Getting workflowId : {}, metaData : {}, current User Id: {}",
+                workflowId, metaData, currentUser.getId());
         Token token = procurementService.generateToken(workflowId, metaData, currentUser);
         return new ResponseEntity<>(token, HttpStatus.OK);
     }

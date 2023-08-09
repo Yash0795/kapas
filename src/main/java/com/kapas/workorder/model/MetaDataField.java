@@ -9,9 +9,17 @@ import lombok.*;
 @ToString
 public class MetaDataField {
 
-    private String name;
+    public MetaDataField(String name, String type, boolean isRequired){
+        this.name = name;
+        this.type = type;
+        this.isRequired = isRequired;
+    }
 
-    private String type;
+    String name;
 
-    private boolean isRequired;
+    String type;
+
+    boolean isRequired;
+
+    String defaultValue;
 }

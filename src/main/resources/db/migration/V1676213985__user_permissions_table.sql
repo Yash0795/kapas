@@ -42,7 +42,7 @@ DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role`
 (
     `id`                int NOT NULL AUTO_INCREMENT,
-    `role_name`         varchar(25) NOT NULL,
+    `role_name`         varchar(75) NOT NULL,
     `description`       varchar(150) DEFAULT NULL,
     `created_by`        int NOT NULL,
     `modified_by`       int NOT NULL,
@@ -77,7 +77,6 @@ CREATE TABLE `workorder`
     `is_active`         boolean DEFAULT TRUE,
     `meta_data`         blob DEFAULT NULL,
     `workflow_id_fk`    int NOT NULL,
-    `assigned_to`       int NOT NULL,
     `created_by`        int NOT NULL,
     `modified_by`       int NOT NULL,
     `creation_time`     datetime DEFAULT CURRENT_TIMESTAMP,
@@ -96,7 +95,6 @@ CREATE TABLE `task`
     `title`             varchar(100),
     `remark`            varchar(175) DEFAULT NULL,
     `status`            enum ('NOT_STARTED','IN_PROGRESS','COMPLETED','RE_OPENED', 'CLOSED') DEFAULT 'NOT_STARTED',
-    `assigned_to`       int NOT NULL,
     `is_active`         boolean DEFAULT TRUE,
     `task_number`       boolean NOT NULL,
     `meta_data`         blob DEFAULT NULL,
@@ -192,156 +190,44 @@ CREATE TABLE `purchase`
 
 --  INITAL DATA
 
-INSERT INTO `role`(role_name, description, created_by, modified_by)
-VALUES ('ROLE_ADMIN', 'This is Administrator role. This is the highest level Role in the organization which has all the permissions', 1, 1);
+INSERT INTO `role`(id, role_name, description, created_by, modified_by)
+VALUES (1, 'ROLE_ADMIN', 'This is Administrator role. This is the highest level Role in the organization which has all the permissions', 1, 1);
+
+INSERT INTO `role`(id,role_name, description, created_by, modified_by)
+VALUES (2, 'RL_PROCUREMENT_GENERATE_TOKEN', 'This will be assigned to generate the token during procurement process.', 1, 1);
+
+INSERT INTO `role`(id,role_name, description, created_by, modified_by)
+VALUES (3, 'RL_PROCUREMENT_SAMPLE_GRADING', 'This will be assigned to grade the item sample.', 1, 1);
+
+INSERT INTO `role`(id,role_name, description, created_by, modified_by)
+VALUES (4, 'RL_PROCUREMENT_ITEM_WEIGHING', 'This will be assigned to weigh the vendor item/vehicle.', 1, 1);
+
+INSERT INTO `role`(id,role_name, description, created_by, modified_by)
+VALUES (5, 'RL_PROCUREMENT_UNLOADING', 'This will be assigned to unload the vendor item/vehicle.', 1, 1);
 
 INSERT INTO `user`(user_name, first_name, last_name, email, password, mobile, is_active, description, role_id, created_by, modified_by)
 VALUES ('admin', 'Admin', 'Admin', 'kapas_2023@gmail.com', '$2a$10$l3DiOh2JYd9pH9UY5MIziuJ4dNr0reoPncGkow9a1Ke/OSr7hMjl2', '999-999-9999', 1, 'This is Admin User.', 1, 1, 1);
 
+INSERT INTO `user`(user_name, first_name, last_name, email, password, mobile, is_active, description, role_id, created_by, modified_by)
+VALUES ('Alex', 'Alex', '', 'alex@gmail.com', '$2a$10$l3DiOh2JYd9pH9UY5MIziuJ4dNr0reoPncGkow9a1Ke/OSr7hMjl2', '999-999-9999', 1,
+'This user can generate tokens during procurement process.', 2, 1, 1);
+
+INSERT INTO `user`(user_name, first_name, last_name, email, password, mobile, is_active, description, role_id, created_by, modified_by)
+VALUES ('Bob', 'Alex', '', 'bob@gmail.com', '$2a$10$l3DiOh2JYd9pH9UY5MIziuJ4dNr0reoPncGkow9a1Ke/OSr7hMjl2', '999-999-9999', 1,
+'This user can grade sample during procurement process.', 3, 1, 1);
+
+INSERT INTO `user`(user_name, first_name, last_name, email, password, mobile, is_active, description, role_id, created_by, modified_by)
+VALUES ('Chris', 'Alex', '', 'chris@gmail.com', '$2a$10$l3DiOh2JYd9pH9UY5MIziuJ4dNr0reoPncGkow9a1Ke/OSr7hMjl2', '999-999-9999', 1,
+'This user can weigh item/vehicle during procurement process.', 3, 1, 1);
+
+INSERT INTO `user`(user_name, first_name, last_name, email, password, mobile, is_active, description, role_id, created_by, modified_by)
+VALUES ('Dave', 'Alex', '', 'dave@gmail.com', '$2a$10$l3DiOh2JYd9pH9UY5MIziuJ4dNr0reoPncGkow9a1Ke/OSr7hMjl2', '999-999-9999', 1,
+'This user can unload item/vehicle during procurement process.', 4, 1, 1);
+
 INSERT INTO `workflow`(workflow_id, description, version, workflow_json, created_by, modified_by)
-VALUES ('SHRI_BALAJI_AGR_PROCUREMENT_PROCESS', 'This workflow is for the digital automation of the currently followed procuerement process at Shri Balaji Agro Pvt Ltd.', 1,
-"{
-  'workflowId': 'SHRI_BALAJI_AGR_PROCUREMENT_PROCESS',
-  'totalTask': 4,
-  'taskList': [
-    {
-      'taskNumber': 1,
-      'taskId': 'GENERATE_TOKEN',
-      'taskName': 'Generate Token',
-      'description': 'This task is assigned to user to insert vendor/vehicle details and generate token.',
-      'isRequired': true,
-      'fields': [
-        {
-          'name': 'vendor_fname',
-          'type': 'string',
-          'isRequired': true
-        },
-        {
-          'name': 'vendor_lname',
-          'type': 'string',
-          'isRequired': true
-        },
-        {
-          'name': 'vendor_address',
-          'type': 'string',
-          'isRequired': true
-        },
-        {
-          'name': 'vendor_state',
-          'type': 'string',
-          'isRequired': true
-        },
-        {
-          'name': 'vendor_city',
-          'type': 'string',
-          'isRequired': true
-        },
-        {
-          'name': 'vendor_mobile',
-          'type': 'string',
-          'isRequired': true
-        },
-        {
-          'name': 'vendor_id_type',
-          'type': 'string',
-          'isRequired': true
-        },
-        {
-          'name': 'vendor_id',
-          'type': 'string',
-          'isRequired': true
-        },
-        {
-          'name': 'vendor_vehicle',
-          'type': 'string',
-          'isRequired': true
-        },
-        {
-          'name': 'vendor_img',
-          'type': 'string',
-          'isRequired': true
-        },
-        {
-          'name': 'vendor_vehicle_img',
-          'type': 'string',
-          'isRequired': true
-        }
-      ]
-    },
-    {
-      'taskNumber': 2,
-      'taskId': 'GRADING',
-      'taskName': 'Sampling and Grading',
-      'description': 'This task is assigned to user to decide the cotton sample grade and insert grade/price details.',
-      'isRequired': true,
-      'fields': [
-        {
-          'name': 'grade',
-          'type': 'string',
-          'isRequired': true
-        },
-        {
-          'name': 'price',
-          'type': 'double',
-          'isRequired': true
-        },
-        {
-          'name': 'price_unit',
-          'type': 'string',
-          'isRequired': true
-        }
-      ]
-    },
-    {
-      'taskNumber': 3,
-      'taskId': 'WEIGHING',
-      'taskName': 'Cotton Weighing',
-      'description': 'This task is assigned to user to insert IN and OUT weight of cotton carrying vehicle.',
-      'isRequired': true,
-      'fields': [
-        {
-          'name': 'in_weight',
-          'type': 'double',
-          'isRequired': true
-        },
-        {
-          'name': 'out_weight',
-          'type': 'double',
-          'isRequired': true
-        },
-        {
-          'name': 'weigh_unit',
-          'type': 'string',
-          'isRequired': true
-        }
-      ]
-    },
-    {
-      'taskNumber': 4,
-      'taskId': 'UNLOADING',
-      'taskName': 'Cotton Unloading',
-      'description': 'This task is assigned to user to insert IN and OUT weight of cotton carrying vehicle.',
-      'isRequired': true,
-      'fields': [
-        {
-          'name': 'in_weight',
-          'type': 'double',
-          'isRequired': true
-        },
-        {
-          'name': 'out_weight',
-          'type': 'double',
-          'isRequired': true
-        },
-        {
-          'name': 'weigh_unit',
-          'type': 'string',
-          'isRequired': true
-        }
-      ]
-    }
-  ]
-}", 1, 1);
+VALUES ('SHRI_BALAJI_AGR_PROCUREMENT_PROCESS',
+'This workflow is for the digital automation of the currently followed procuerement process at Shri Balaji Agro Pvt Ltd.', 1,
+'{"workflowId":"SHRI_BALAJI_AGR_PROCUREMENT_PROCESS","totalTask":4,"assignedToRoleName":"RL_PROCUREMENT_UNLOADING","taskList":[{"taskNumber":1,"taskId":"GENERATE_TOKEN","assignedToRoleName":"RL_PROCUREMENT_GENERATE_TOKEN","taskName":"GenerateToken","description":"Thistaskisassignedtousertoinsertvendor/vehicledetailsandgeneratetoken.","isRequired":true,"fields":[{"name":"vendor_fname","type":"string","isRequired":true},{"name":"vendor_lname","type":"string","isRequired":true},{"name":"vendor_address","type":"string","isRequired":true},{"name":"vendor_state","type":"string","isRequired":true},{"name":"vendor_city","type":"string","isRequired":true},{"name":"vendor_mobile","type":"string","isRequired":true},{"name":"vendor_id_type","type":"string","isRequired":true},{"name":"vendor_id","type":"string","isRequired":true},{"name":"vendor_vehicle","type":"string","isRequired":true},{"name":"vendor_img","type":"string","isRequired":true},{"name":"vendor_vehicle_img","type":"string","isRequired":true}]},{"taskNumber":2,"taskId":"GRADING","assignedToRoleName":"RL_PROCUREMENT_SAMPLE_GRADING","taskName":"SamplingandGrading","description":"Thistaskisassignedtousertodecidethecottonsamplegradeandinsertgrade/pricedetails.","isRequired":true,"fields":[{"name":"grade","type":"string","isRequired":true},{"name":"price","type":"double","isRequired":true},{"name":"price_unit","type":"string","isRequired":true}]},{"taskNumber":3,"taskId":"WEIGHING","assignedToRoleName":"RL_PROCUREMENT_ITEM_WEIGHING","taskName":"CottonWeighing","description":"ThistaskisassignedtousertoinsertINandOUTweightofcottoncarryingvehicle.","isRequired":true,"fields":[{"name":"in_weight","type":"double","isRequired":true},{"name":"out_weight","type":"double","isRequired":true},{"name":"weigh_unit","type":"string","isRequired":true}]},{"taskNumber":4,"taskId":"UNLOADING","assignedToRoleName":"RL_PROCUREMENT_UNLOADING","taskName":"CottonUnloading","description":"ThistaskisassignedtousertoinsertINandOUTweightofcottoncarryingvehicle.","isRequired":true,"fields":[{"name":"in_weight","type":"double","isRequired":true},{"name":"out_weight","type":"double","isRequired":true},{"name":"weigh_unit","type":"string","isRequired":true}]}]}', 1, 1);
 
 -- CONSTRAINTS
 
@@ -363,8 +249,7 @@ ALTER TABLE `role`
 ALTER TABLE `workorder`
     ADD CONSTRAINT `workorder_workflow_fk` FOREIGN KEY (`workflow_id_fk`) REFERENCES `workflow` (`id`);
 
-ALTER TABLE `workorder`
-    ADD CONSTRAINT `workorder_assigned_role_fk` FOREIGN KEY (`assigned_to`) REFERENCES `role` (`id`);
+-- ALTER TABLE `workorder` ADD CONSTRAINT `workorder_assigned_role_fk` FOREIGN KEY (`assigned_to`) REFERENCES `role` (`id`);
 
 ALTER TABLE `workorder`
     ADD CONSTRAINT `workorder_creation_user_fk` FOREIGN KEY (`created_by`) REFERENCES `user` (`id`);
@@ -375,8 +260,7 @@ ALTER TABLE `workorder`
 ALTER TABLE `task`
     ADD CONSTRAINT `task_workorder_fk` FOREIGN KEY (`workorder_id_fk`) REFERENCES `workorder` (`id`);
 
-ALTER TABLE `task`
-    ADD CONSTRAINT `task_assigned_role_fk` FOREIGN KEY (`assigned_to`) REFERENCES `role` (`id`);
+-- ALTER TABLE `task` ADD CONSTRAINT `task_assigned_role_fk` FOREIGN KEY (`assigned_to`) REFERENCES `role` (`id`);
 
 ALTER TABLE `task`
     ADD CONSTRAINT `task_completed_by_user_fk` FOREIGN KEY (`completed_by`) REFERENCES `user` (`id`);

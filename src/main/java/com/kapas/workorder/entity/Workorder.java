@@ -72,10 +72,6 @@ public class Workorder implements Serializable {
     private Workflow workflow;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "assigned_to", nullable = false)
-    private Role assignedTo;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
 

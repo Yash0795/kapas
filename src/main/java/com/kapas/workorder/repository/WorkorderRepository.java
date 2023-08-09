@@ -15,7 +15,7 @@ public interface WorkorderRepository extends CrudRepository<Workorder, Integer> 
     Workorder getWorkorderByWorkorderId(String workorderId);
 
     @Query("select count(*) as cnt from Workorder wo where date(wo.creationTime) = CURRENT_DATE() ")
-    Integer getCurrentDatesWorkorderCount(Date creationTime);
+    Integer getCurrentDatesWorkorderCount();
 
 
 }
